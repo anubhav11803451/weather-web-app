@@ -1,5 +1,3 @@
-'use server';
-
 import { Location } from '@/@types/types';
 import env from '@/env';
 import { sortBy } from 'lodash';
