@@ -17,7 +17,7 @@ export function CurrentWeatherWidget({ data, city }: { data: CurrentWeather; cit
                     />
                     <div className='stat-title text-center'>{weatherCodes[wCode]}</div>
                 </div>
-                <div className='stat-value'>{city}</div>
+                <div className='stat-value text-wrap'>{city}</div>
                 <div className='stat-value text-primary'>
                     {data.temperature_2m.toPrecision(4)}
                     <span className='ml-1 align-text-top text-base'>
