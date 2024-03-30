@@ -1,10 +1,10 @@
 import { SearchParamsProps } from '@/@types/types';
 import { getWeather } from '@/libs/actions/weather';
 import { Metadata } from 'next';
-import { SearchBar } from '@/components/widgets';
-import { DailyForecastWidget } from '@/components/widgets/dailyForecast';
+import SearchBar from '@/components/widgets/searchBar';
+import DailyForecastWidget from '@/components/widgets/dailyForecast';
 import CurrentWeatherWidget from '@/components/widgets/currentWeather';
-import OtherStats from '@/components/widgets/otherStats';
+import OtherStatsWidget from '@/components/widgets/otherStats';
 import HourlyForecastWidget from '@/components/widgets/hourlyForecast';
 
 export async function generateMetadata({
@@ -16,7 +16,7 @@ export async function generateMetadata({
 
     return {
         title: `${city} - Weather Forecast`,
-        description: `${city} weather forecast with current conditions, wind, air quality, and what to expect for the next 3 days.`,
+        description: `${city} weather forecast with current conditions, wind, rain and what to expect for the next 7 days.`,
     };
 }
 
@@ -37,7 +37,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
                         {/* Hourly Forecast */}
                         <HourlyForecastWidget data={data.hourly} />
                         {/* Other Stats */}
-                        <OtherStats data={data.current} />
+                        <OtherStatsWidget data={data.current} />
                     </div>
 
                     {/* daily forecast */}

@@ -49,6 +49,7 @@ export function SearchBar() {
                                 onClick={() => {
                                     appAction.setSearch({
                                         inProgress: false,
+                                        city: city.name,
                                         cities: [],
                                         dropdownOpen: false,
                                     });

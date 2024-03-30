@@ -49,6 +49,7 @@ export const getParams = ({ lat, lon }: { lat: number; lon: number }) => {
         'cloud_cover',
         'wind_speed_10m',
         'wind_direction_10m',
+        'is_day',
     ].join(',');
     const hourly = [
         'temperature_2m',
@@ -61,6 +62,7 @@ export const getParams = ({ lat, lon }: { lat: number; lon: number }) => {
         'wind_direction_80m',
         'uv_index',
         'freezing_level_height',
+        'is_day',
     ].join(',');
     const dailyParams = [
         'weather_code',
@@ -89,6 +91,7 @@ export function formatWeatherData(data: any): WeatherData {
         weather_code: data.current.weather_code,
         wind_speed_10m: data.current.wind_speed_10m,
         wind_direction_10m: data.current.wind_direction_10m,
+        is_day: data.current.is_day === 0 ? false : true,
         units: data.current_units,
     };
 
@@ -104,6 +107,7 @@ export function formatWeatherData(data: any): WeatherData {
         wind_direction_80m: data.hourly.wind_direction_80m[index],
         uv_index: data.hourly.uv_index[index],
         freezing_level_height: data.hourly.freezing_level_height[index],
+        is_day: data.hourly.is_day[index] === 0 ? false : true,
         units: data.hourly_units,
     }));
 

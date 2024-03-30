@@ -22,9 +22,9 @@ export interface SearchParamsProps {
 }
 
 export interface WeatherData {
-    current: CurrentWeather;
     daily: DailyForecast[];
     hourly: HourlyWeatherData[];
+    current: CurrentWeather;
 }
 
 export type Units = Record<string, string>;
@@ -41,6 +41,7 @@ export interface CurrentWeather {
     weather_code: number;
     wind_speed_10m: number;
     wind_direction_10m: number;
+    is_day: boolean;
     units: Units;
 }
 
@@ -68,5 +69,6 @@ export interface HourlyWeatherData {
     wind_direction_80m: number;
     uv_index?: string;
     freezing_level_height: number;
+    is_day: boolean;
     units: Units;
 }

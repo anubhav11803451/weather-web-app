@@ -2,20 +2,15 @@ import { CurrentWeather } from '@/@types/types';
 import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
 import Image from 'next/image';
 
-export default function CurrentWeatherWidget({
-    data,
-    city,
-}: {
-    data: CurrentWeather;
-    city: string;
-}) {
+export function CurrentWeatherWidget({ data, city }: { data: CurrentWeather; city: string }) {
     const wCode = data.weather_code;
+    const suffix = data.is_day ? 'day' : 'night';
     return (
         <div className='box w-full'>
             <div className='stat'>
                 <div className='stat-figure text-primary'>
                     <Image
-                        src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]].day}`}
+                        src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]][suffix]}`}
                         alt={weatherCodes[wCode]}
                         height={100}
                         width={100}
@@ -37,3 +32,5 @@ export default function CurrentWeatherWidget({
         </div>
     );
 }
+
+export default CurrentWeatherWidget;

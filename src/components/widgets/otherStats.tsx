@@ -1,7 +1,7 @@
 import { CurrentWeather } from '@/@types/types';
 import { CloudIcon } from '@heroicons/react/24/solid';
 
-export default function OtherStats({ data }: { data: CurrentWeather }) {
+export function OtherStatsWidget({ data }: { data: CurrentWeather }) {
     return (
         <div className='stats flex flex-wrap shadow sm:flex-nowrap'>
             <div className='stat'>
@@ -113,3 +113,5 @@ export default function OtherStats({ data }: { data: CurrentWeather }) {
         </div>
     );
 }
+
+export default OtherStatsWidget;

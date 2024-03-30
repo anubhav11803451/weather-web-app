@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
 import { generateRandomKey } from '@/libs/utils/helpers';
 
-export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData[] }) {
+export function HourlyForecastWidget({ data }: Readonly<{ data: HourlyWeatherData[] }>) {
     return (
         <div className='daily-forecast-container w-full'>
             <Card className='card-normal w-full'>
@@ -14,6 +14,7 @@ export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData
                     <ul className='flex flex-row overflow-auto'>
                         {data.map((daily, index) => {
                             const wCode = daily.weather_code;
+                            const suffix = daily.is_day ? 'day' : 'night';
                             const time = new Date(daily.time).toLocaleTimeString('en-US', {
                                 hour: 'numeric',
                                 minute: 'numeric',
@@ -25,7 +26,7 @@ export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData
                                         <li>{time}</li>
                                         <li className=' flex flex-col items-center'>
                                             <Image
-                                                src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]].day}`}
+                                                src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]][suffix]}`}
                                                 alt={weatherCodes[wCode]}
                                                 height={80}
                                                 width={80}
@@ -48,3 +49,5 @@ export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData
         </div>
     );
 }
+
+export default HourlyForecastWidget;

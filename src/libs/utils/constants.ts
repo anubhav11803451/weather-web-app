@@ -42,8 +42,8 @@ export const weatherCodes: Record<number, string> = {
 //URL is https://openweathermap.org/img/wn/10d@2x.png
 export const weatherIcons: Record<string, { day: string; night: string }> = {
     'Clear sky': { day: '01d@2x.png', night: '01n@2x.png' },
-    'Mainly clear': { day: '02d@2x.png', night: '02n@2x.png' },
-    'Partly cloudy': { day: '03d@2x.png', night: '03n@2x.png' },
+    'Mainly clear': { day: '01d@2x.png', night: '01n@2x.png' },
+    'Partly cloudy': { day: '02d@2x.png', night: '02n@2x.png' },
     Overcast: { day: '04d@2x.png', night: '04n@2x.png' },
     Fog: { day: '50d@2x.png', night: '50n@2x.png' },
     'Depositing rime fog': { day: '50d@2x.png', night: '50n@2x.png' },

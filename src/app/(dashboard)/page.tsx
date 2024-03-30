@@ -1,93 +1,82 @@
-import { SearchParamsProps } from '@/@types/types';
-import Card from '@/components/card';
-import { SearchBar } from '@/components/widgets';
+'use client';
+
+import { DailyForecast, HourlyWeatherData } from '@/@types/types';
+import SearchBar from '@/components/widgets/searchBar';
+import DailyForecastWidget from '@/components/widgets/dailyForecast';
+import CurrentWeatherWidget from '@/components/widgets/currentWeather';
+import HourlyForecastWidget from '@/components/widgets/hourlyForecast';
+import OtherStatsWidget from '@/components/widgets/otherStats';
 import { getWeather } from '@/libs/actions/weather';
-import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
-import { Metadata } from 'next';
-import Image from 'next/image';
+import { appAction } from '@/libs/shared/action';
+import { appState } from '@/libs/shared/state';
+import isUndefined from 'lodash/isUndefined';
 
-export async function generateMetadata({
-    searchParams,
-}: {
-    searchParams: SearchParamsProps;
-}): Promise<Metadata> {
-    const { city = 'Home' } = searchParams;
+import { useEffect } from 'react';
+import { useSnapshot } from 'valtio';
 
-    return {
-        title: `${city} - Weather Forecast`,
-        description: `${city} weather forecast with current conditions, wind, air quality, and what to expect for the next 3 days.`,
-    };
-}
+export default function Page() {
+    const snap = useSnapshot(appState);
 
-export default async function Page({ searchParams }: { searchParams: SearchParamsProps }) {
-    const { lat, lon } = searchParams;
-    const data = await getWeather({ lat: parseInt(lat!), lon: parseInt(lon!) });
-    console.log(data.current.units);
-    const wCode = data.current.weather_code;
+    useEffect(() => {
+        async function fetchData({ lat, lon }: { lat?: number; lon?: number }) {
+            if (!isUndefined(lat) && !isUndefined(lon)) {
+                appAction.setFetchWeather({ inProgress: true });
+                const data = await getWeather({ lat: lat, lon: lon });
+                appAction.setFetchWeather({ inProgress: false, weatherData: data });
+            }
+        }
+        if ('geolocation' in navigator) {
+            // Retrieve latitude & longitude coordinates from `navigator.geolocation` Web API
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
+                const { latitude, longitude } = coords;
+                fetchData({ lat: latitude, lon: longitude });
+            });
+        }
+    }, []);
+
+    const inProgress = snap.fetchWeather.inProgress!;
+    const data = snap.fetchWeather.weatherData!;
+
+    if (inProgress) {
+        return (
+            <div className='page-container h-full p-6'>
+                <ul className='flex size-full flex-col gap-6 '>
+                    {/* Search */}
+                    <div className='bg skeleton h-10 w-full bg-base-200' />
+                    <ul className='weather-details-layout flex size-full flex-row flex-wrap gap-6 sm:flex-nowrap'>
+                        <div className='current-weather-container flex w-full flex-col items-center justify-evenly gap-8 sm:w-3/4'>
+                            <div className='bg skeleton h-56 w-full bg-base-200' />
+
+                            <div className='bg skeleton h-56 w-full bg-base-200' />
+
+                            <div className='bg skeleton h-44 w-full bg-base-200' />
+                        </div>
+
+                        <div className='bg skeleton mb-10 h-96 w-full bg-base-200 sm:w-1/4' />
+                    </ul>
+                </ul>
+            </div>
+        );
+    }
+
     return (
         <div className='page-container h-full p-6'>
             <ul className='flex size-full flex-col gap-6 '>
                 {/* Search */}
                 <SearchBar />
-                <ul className='weather-details-layout flex size-full flex-row  gap-6'>
-                    {/* weather layout */}
-                    <div className='current-weather-container w-full sm:w-3/4'>
-                        <div className='stats shadow'>
-                            <div className='stat'>
-                                <div className='stat-figure text-primary'>
-                                    <Image
-                                        src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]].night}`}
-                                        alt={weatherCodes[wCode]}
-                                        height={100}
-                                        width={100}
-                                    />
-                                    <div className='stat-title text-center'>
-                                        {weatherCodes[wCode]}
-                                    </div>
-                                </div>
-                                <div className='stat-title'>Today&apos;s weather</div>
-                                <div className='stat-value text-primary'>
-                                    {data.current.temperature_2m.toPrecision(4)}
-                                    <span className='ml-1 align-text-top text-base'>
-                                        {data.current.units['temperature_2m']}
-                                    </span>
-                                </div>
-                                <div className='stat-desc'>{new Date().toString()}</div>
-                            </div>
-                        </div>
+                <ul className='weather-details-layout flex size-full flex-row flex-wrap gap-6 sm:flex-nowrap'>
+                    <div className='current-weather-container flex w-full flex-col items-center justify-evenly gap-8 sm:w-3/4'>
+                        {/* weather layout */}
+                        <CurrentWeatherWidget data={data.current} city={'Current Location'} />
+
+                        {/* Hourly Forecast */}
+                        <HourlyForecastWidget data={data.hourly as HourlyWeatherData[]} />
+                        {/* Other Stats */}
+                        <OtherStatsWidget data={data.current} />
                     </div>
 
                     {/* daily forecast */}
-                    <div className='daily-forecast-container w-full sm:w-1/4'>
-                        <Card>
-                            <Card.Body>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                                <Card.Title>Daily Forecast</Card.Title>
-                            </Card.Body>
-                        </Card>
-                    </div>
+                    <DailyForecastWidget data={data.daily as DailyForecast[]} />
                 </ul>
             </ul>
         </div>
