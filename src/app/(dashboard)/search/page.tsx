@@ -2,7 +2,7 @@ import { SearchParamsProps } from '@/@types/types';
 import { getWeather } from '@/libs/actions/weather';
 import { Metadata } from 'next';
 import { SearchBar } from '@/components/widgets';
-import { DailyForecast } from '@/components/widgets/dailyForecast';
+import { DailyForecastWidget } from '@/components/widgets/dailyForecast';
 import CurrentWeatherWidget from '@/components/widgets/currentWeather';
 import OtherStats from '@/components/widgets/otherStats';
 import HourlyForecastWidget from '@/components/widgets/hourlyForecast';
@@ -41,7 +41,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
                     </div>
 
                     {/* daily forecast */}
-                    <DailyForecast data={data.daily} />
+                    <DailyForecastWidget data={data.daily} />
                 </ul>
             </ul>
         </div>

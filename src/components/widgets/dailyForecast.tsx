@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
 import { generateRandomKey, getDayString } from '@/libs/utils/helpers';
 
-export function DailyForecast({ data }: { data: DailyForecast[] }) {
+export function DailyForecastWidget({ data }: { data: DailyForecast[] }) {
     return (
         <div className='daily-forecast-container w-full sm:w-1/4'>
             <Card className='card-normal'>
