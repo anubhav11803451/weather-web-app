@@ -25,18 +25,21 @@ export function SearchBar() {
             appAction.setSearch({ inProgress: true });
             const location = await getLocation({ name: query, count: 100 });
             appAction.setSearch({ inProgress: false, cities: location });
-            appAction.toggleDropdown();
+            appAction.toggleDropdown(true);
         }
     }, 500);
     const handldeToggle = () => {
-        appAction.toggleDropdown();
+        appAction.toggleDropdown(false);
     };
 
     useClickOutside(dropdownRef, handldeToggle);
 
     return (
         <div className='top-search-bar w-full sm:w-3/4 '>
-            <label className='input flex items-center gap-2'>
+            <label
+                className='input flex items-center gap-2'
+                onClick={() => appAction.toggleDropdown(true)}
+            >
                 <input
                     type='text'
                     className='grow'
@@ -49,7 +52,7 @@ export function SearchBar() {
                     <MagnifyingGlassIcon className='size-5' />
                 )}
             </label>
-            {!isEmpty(cities) && (
+            {dropdownOpen && !isEmpty(cities) && (
                 <div className={twJoin('dropdown w-full', dropdownOpen && 'dropdown-open')}>
                     <ul
                         ref={dropdownRef}
@@ -59,12 +62,7 @@ export function SearchBar() {
                             <li
                                 key={city.id}
                                 onClick={() => {
-                                    appAction.setSearch({
-                                        inProgress: false,
-                                        city: city.name,
-                                        cities: [],
-                                    });
-                                    handldeToggle();
+                                    appAction.toggleDropdown(false);
                                 }}
                             >
                                 <Link
