@@ -8,8 +8,11 @@ export function Card({
     return <div className={twJoin('card bg-base-100 shadow-xl', className)}>{children}</div>;
 }
 
-export function CardBody({ children }: Readonly<{ children: React.ReactNode }>) {
-    return <div className='card-body'>{children}</div>;
+export function CardBody({
+    children,
+    className,
+}: Readonly<{ children: React.ReactNode; className?: string }>) {
+    return <div className={twJoin('card-body', className)}>{children}</div>;
 }
 
 export function CardTitle({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,97 +1,94 @@
-'use client';
-
+import { SearchParamsProps } from '@/@types/types';
 import Card from '@/components/card';
-import { getLocation } from '@/libs/actions/location';
-import { appAction } from '@/libs/shared/action';
-import { appState } from '@/libs/shared/state';
-import { formatAddressName } from '@/libs/utils/helpers';
-import { debounce, isEmpty } from 'lodash';
-import Link from 'next/link';
-import { twJoin } from 'tailwind-merge';
-import { useSnapshot } from 'valtio';
+import { SearchBar } from '@/components/widgets';
+import { getWeather } from '@/libs/actions/weather';
+import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
+import { Metadata } from 'next';
+import Image from 'next/image';
 
-export default function Page() {
-    const snap = useSnapshot(appState);
-    const locations = snap.sidebar.locations!;
-    const inProgress = snap.search.inProgress;
-    const cities = snap.search.cities;
-    const dropdownOpen = snap.search.dropdownOpen;
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: SearchParamsProps;
+}): Promise<Metadata> {
+    const { city = 'Home' } = searchParams;
 
-    const searchLocations = debounce(async (e) => {
-        const query = e.target.value;
-        if (!isEmpty(query)) {
-            appAction.setSearch({ inProgress: true });
-            const location = await getLocation({ name: query, count: 100 });
-            appAction.setSearch({ inProgress: false, cities: location, dropdownOpen: true });
-        }
-    }, 500);
+    return {
+        title: `${city} - Weather Forecast`,
+        description: `${city} weather forecast with current conditions, wind, air quality, and what to expect for the next 3 days.`,
+    };
+}
 
+export default async function Page({ searchParams }: { searchParams: SearchParamsProps }) {
+    const { lat, lon } = searchParams;
+    const data = await getWeather({ lat: parseInt(lat!), lon: parseInt(lon!) });
+    console.log(data.current.units);
+    const wCode = data.current.weather_code;
     return (
-        <div className='page-container h-full'>
-            <ul className='flex h-full flex-col items-center justify-center'>
-                <div className='container m-auto w-fit'>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Search for locations</Card.Title>
-                            {/* <Card.Actions> */}
-                            <label className='input input-bordered flex items-center gap-2'>
-                                <input
-                                    type='text'
-                                    className='grow'
-                                    placeholder='Search'
-                                    onInputCapture={searchLocations}
-                                />
-                                {inProgress ? (
-                                    <span className='loading loading-spinner loading-xs' />
-                                ) : (
-                                    <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        viewBox='0 0 16 16'
-                                        fill='currentColor'
-                                        className='size-4 opacity-70'
-                                    >
-                                        <path
-                                            fillRule='evenodd'
-                                            d='M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z'
-                                            clipRule='evenodd'
-                                        />
-                                    </svg>
-                                )}
-                            </label>
-
-                            {!isEmpty(cities) && (
-                                <div
-                                    className={twJoin('dropdown', dropdownOpen && 'dropdown-open')}
-                                >
-                                    <ul className='menu dropdown-content z-10 flex max-h-96 w-auto flex-col flex-nowrap overflow-y-auto rounded-box bg-base-100 p-2 shadow-lg'>
-                                        {cities?.map((city) => (
-                                            <li
-                                                key={city.id}
-                                                onClick={() => {
-                                                    appAction.setLocations([...locations, city]);
-                                                    appAction.setSearch({
-                                                        inProgress: false,
-                                                        cities: [],
-                                                        dropdownOpen: false,
-                                                    });
-                                                }}
-                                            >
-                                                <Link
-                                                    href={`search/?lat=${city.latitude}&lon=${city.longitude}&city=${city.name}`}
-                                                    className='btn btn-ghost w-full justify-start text-start'
-                                                >
-                                                    {formatAddressName(city)}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
+        <div className='page-container h-full p-6'>
+            <ul className='flex size-full flex-col gap-6 '>
+                {/* Search */}
+                <SearchBar />
+                <ul className='weather-details-layout flex size-full flex-row  gap-6'>
+                    {/* weather layout */}
+                    <div className='current-weather-container w-full sm:w-3/4'>
+                        <div className='stats shadow'>
+                            <div className='stat'>
+                                <div className='stat-figure text-primary'>
+                                    <Image
+                                        src={`https://openweathermap.org/img/wn/${weatherIcons[weatherCodes[wCode]].night}`}
+                                        alt={weatherCodes[wCode]}
+                                        height={100}
+                                        width={100}
+                                    />
+                                    <div className='stat-title text-center'>
+                                        {weatherCodes[wCode]}
+                                    </div>
                                 </div>
-                            )}
+                                <div className='stat-title'>Today&apos;s weather</div>
+                                <div className='stat-value text-primary'>
+                                    {data.current.temperature_2m.toPrecision(4)}
+                                    <span className='ml-1 align-text-top text-base'>
+                                        {data.current.units['temperature_2m']}
+                                    </span>
+                                </div>
+                                <div className='stat-desc'>{new Date().toString()}</div>
+                            </div>
+                        </div>
+                    </div>
 
-                            {/* </Card.Actions> */}
-                        </Card.Body>
-                    </Card>
-                </div>
+                    {/* daily forecast */}
+                    <div className='daily-forecast-container w-full sm:w-1/4'>
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                                <Card.Title>Daily Forecast</Card.Title>
+                            </Card.Body>
+                        </Card>
+                    </div>
+                </ul>
             </ul>
         </div>
     );
