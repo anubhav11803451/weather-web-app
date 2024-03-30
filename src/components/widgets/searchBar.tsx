@@ -1,12 +1,14 @@
 'use client';
 
 import { getLocation } from '@/libs/actions/location';
+import { useClickOutside } from '@/libs/hooks';
 import { appAction } from '@/libs/shared/action';
 import { appState } from '@/libs/shared/state';
 import { formatAddressName } from '@/libs/utils/helpers';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { debounce, isEmpty } from 'lodash';
 import Link from 'next/link';
+import { useRef } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { useSnapshot } from 'valtio';
 
@@ -15,15 +17,22 @@ export function SearchBar() {
     const inProgress = snap.search.inProgress;
     const cities = snap.search.cities;
     const dropdownOpen = snap.search.dropdownOpen;
+    const dropdownRef = useRef<HTMLUListElement>(null);
 
     const searchLocations = debounce(async (e) => {
         const query = e.target.value;
         if (!isEmpty(query)) {
             appAction.setSearch({ inProgress: true });
             const location = await getLocation({ name: query, count: 100 });
-            appAction.setSearch({ inProgress: false, cities: location, dropdownOpen: true });
+            appAction.setSearch({ inProgress: false, cities: location });
+            appAction.toggleDropdown();
         }
     }, 500);
+    const handldeToggle = () => {
+        appAction.toggleDropdown();
+    };
+
+    useClickOutside(dropdownRef, handldeToggle);
 
     return (
         <div className='top-search-bar w-full sm:w-3/4 '>
@@ -42,7 +51,10 @@ export function SearchBar() {
             </label>
             {!isEmpty(cities) && (
                 <div className={twJoin('dropdown w-full', dropdownOpen && 'dropdown-open')}>
-                    <ul className='menu dropdown-content z-10 flex max-h-96 w-full flex-col flex-nowrap overflow-y-auto rounded-box bg-base-100 p-2 shadow-lg'>
+                    <ul
+                        ref={dropdownRef}
+                        className='menu dropdown-content z-10 flex max-h-96 w-full flex-col flex-nowrap overflow-y-auto rounded-box bg-base-100 p-2 shadow-lg'
+                    >
                         {cities?.map((city) => (
                             <li
                                 key={city.id}
@@ -51,8 +63,8 @@ export function SearchBar() {
                                         inProgress: false,
                                         city: city.name,
                                         cities: [],
-                                        dropdownOpen: false,
                                     });
+                                    handldeToggle();
                                 }}
                             >
                                 <Link
