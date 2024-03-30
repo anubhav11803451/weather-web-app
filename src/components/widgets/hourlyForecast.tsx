@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
 import { generateRandomKey } from '@/libs/utils/helpers';
 
-export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData[] }) {
+export function HourlyForecastWidget({ data }: Readonly<{ data: HourlyWeatherData[] }>) {
     return (
         <div className='daily-forecast-container w-full'>
             <Card className='card-normal w-full'>
@@ -48,3 +48,5 @@ export default function HourlyForecastWidget({ data }: { data: HourlyWeatherData
         </div>
     );
 }
+
+export default HourlyForecastWidget;

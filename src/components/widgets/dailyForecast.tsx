@@ -46,3 +46,5 @@ export function DailyForecastWidget({ data }: { data: DailyForecast[] }) {
         </div>
     );
 }
+
+export default DailyForecastWidget;

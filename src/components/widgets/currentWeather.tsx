@@ -2,13 +2,7 @@ import { CurrentWeather } from '@/@types/types';
 import { weatherCodes, weatherIcons } from '@/libs/utils/constants';
 import Image from 'next/image';
 
-export default function CurrentWeatherWidget({
-    data,
-    city,
-}: {
-    data: CurrentWeather;
-    city: string;
-}) {
+export function CurrentWeatherWidget({ data, city }: { data: CurrentWeather; city: string }) {
     const wCode = data.weather_code;
     return (
         <div className='box w-full'>
@@ -37,3 +31,5 @@ export default function CurrentWeatherWidget({
         </div>
     );
 }
+
+export default CurrentWeatherWidget;

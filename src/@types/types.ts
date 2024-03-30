@@ -22,9 +22,9 @@ export interface SearchParamsProps {
 }
 
 export interface WeatherData {
-    current: CurrentWeather;
     daily: DailyForecast[];
     hourly: HourlyWeatherData[];
+    current: CurrentWeather;
 }
 
 export type Units = Record<string, string>;
