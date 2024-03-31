@@ -6,7 +6,7 @@ import { WeatherData } from '@/@types/types';
 export async function getWeather({ lat, lon }: { lat: number; lon: number }): Promise<WeatherData> {
     try {
         const url = env.forcastingUrl + getParams({ lat, lon });
-        const response = await fetch(url);
+        const response = await fetch(url, { cache: 'no-cache' });
         if (response.ok) {
             const data = await response.json();
 
