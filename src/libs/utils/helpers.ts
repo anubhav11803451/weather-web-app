@@ -95,21 +95,23 @@ export function formatWeatherData(data: any): WeatherData {
         units: data.current_units,
     };
 
-    const hourly: HourlyWeatherData[] = data.hourly.time.map((time: string, index: number) => ({
-        time: time,
-        temperature_2m: data.hourly.temperature_2m[index],
-        relative_humidity_2m: data.hourly.relative_humidity_2m[index],
-        precipitation_probability: data.hourly.precipitation_probability[index],
-        precipitation: data.hourly.precipitation[index],
-        weather_code: data.hourly.weather_code[index],
-        visibility: data.hourly.visibility[index],
-        wind_speed_10m: data.hourly.wind_speed_10m[index],
-        wind_direction_80m: data.hourly.wind_direction_80m[index],
-        uv_index: data.hourly.uv_index[index],
-        freezing_level_height: data.hourly.freezing_level_height[index],
-        is_day: data.hourly.is_day[index] === 0 ? false : true,
-        units: data.hourly_units,
-    }));
+    const hourly: HourlyWeatherData[] = data.hourly.time
+        .slice(0, 25)
+        .map((time: string, index: number) => ({
+            time: time,
+            temperature_2m: data.hourly.temperature_2m[index],
+            relative_humidity_2m: data.hourly.relative_humidity_2m[index],
+            precipitation_probability: data.hourly.precipitation_probability[index],
+            precipitation: data.hourly.precipitation[index],
+            weather_code: data.hourly.weather_code[index],
+            visibility: data.hourly.visibility[index],
+            wind_speed_10m: data.hourly.wind_speed_10m[index],
+            wind_direction_80m: data.hourly.wind_direction_80m[index],
+            uv_index: data.hourly.uv_index[index],
+            freezing_level_height: data.hourly.freezing_level_height[index],
+            is_day: data.hourly.is_day[index] === 0 ? false : true,
+            units: data.hourly_units,
+        }));
 
     const daily: DailyForecast[] = data.daily.time.map((date: string, index: number) => ({
         date: date,

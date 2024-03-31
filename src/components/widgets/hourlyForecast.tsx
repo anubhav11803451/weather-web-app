@@ -10,7 +10,7 @@ export function HourlyForecastWidget({ data }: Readonly<{ data: HourlyWeatherDat
         <div className='daily-forecast-container w-full'>
             <Card className='card-normal w-full'>
                 <Card.Body>
-                    <h3 className='mb-2.5 text-sm font-semibold uppercase'>Hourly Forecast</h3>
+                    <h3 className='mb-2.5 text-sm font-semibold uppercase'>24 Hour Forecast</h3>
                     <ul className='flex flex-row overflow-auto'>
                         {data.map((daily, index) => {
                             const wCode = daily.weather_code;
@@ -19,6 +19,7 @@ export function HourlyForecastWidget({ data }: Readonly<{ data: HourlyWeatherDat
                                 hour: 'numeric',
                                 minute: 'numeric',
                             });
+                            console.log('hourly', time);
                             const key = generateRandomKey();
                             return (
                                 <div key={key}>
